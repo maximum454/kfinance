@@ -50,7 +50,7 @@ jobs:
             --exclude='storage/logs/*' --exclude='storage/framework/cache/data/*' \
             --exclude='storage/framework/sessions/*' --exclude='storage/framework/views/*' \
             --exclude='vendor/' \
-            backend/ ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }}:~/kfinance/backend/
+            backend/ maximum454@vh356.timeweb.ru:~/kfinance/backend/
 
       - name: Deploy frontend to Timeweb
         run: |
