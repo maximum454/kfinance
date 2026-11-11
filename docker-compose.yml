@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kfinance-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: "root_pass_123"
+      MYSQL_DATABASE: "kfinance"
+      MYSQL_USER: "kfinance"
+      MYSQL_PASSWORD: "kfinance_pass"

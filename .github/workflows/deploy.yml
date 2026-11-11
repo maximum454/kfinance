@@ -1,0 +1,89 @@
+name: Deploy to Timeweb
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      - name: Setup PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: mbstring, pdo_mysql, bcmath, curl, gd, xml
+          tools: composer:v2
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: |
+          composer install --no-dev --optimize-autoloader
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.TIMEWEB_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "StrictHostKeyChecking accept-new" >> ~/.ssh/config
+
+      - name: Deploy backend to Timeweb
+        run: |
+          rsync -avz --delete --exclude='.git' --exclude='.env' --exclude='.env.*' \
+            --exclude='storage/logs/*' --exclude='storage/framework/cache/data/*' \
+            --exclude='storage/framework/sessions/*' --exclude='storage/framework/views/*' \
+            --exclude='vendor/' \
+            backend/ ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }}:~/kfinance/backend/
+
+      - name: Deploy frontend to Timeweb
+        run: |
+          rsync -avz --delete \
+            frontend/dist/ ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }}:~/kfinance/public_html/
+
+      - name: Post-deploy (symlink, permissions, migrations)
+        run: |
+          ssh ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }} bash -s << 'REMOTESCRIPT'
+            set -e
+            echo "→ Recreating symlink"
+            ln -sf /home/m/maximum454/kfinance/backend/public /home/m/maximum454/kfinance/public_html/laravel
+
+            echo "→ Setting permissions"
+            chmod -R 755 ~/kfinance/backend/storage ~/kfinance/backend/bootstrap/cache
+
+            echo "→ Running migrations"
+            cd ~/kfinance/backend
+            /opt/php83/bin/php artisan migrate --force
+
+            echo "→ Clearing cache"
+            /opt/php83/bin/php artisan optimize:clear
+
+            echo "→ Done"
+          REMOTESCRIPT
+
+      - name: Health check
+        run: |
+          sleep 3
+          HTTP_CODE=$(curl -s -o /dev/null -w '%{http_code}' https://kfinance.webtm.ru/ 2>/dev/null || echo "000")
+          echo "Frontend HTTP status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "000" ]; then
+            echo "⚠ Frontend health check failed (site might be down)"
+          else
+            echo "✅ Frontend is up ($HTTP_CODE)"
+          fi
