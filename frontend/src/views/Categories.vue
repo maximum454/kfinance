@@ -1,96 +1,162 @@
 <template>
-  <div class="mgmt">
-    <PageHeader title="Категории" />
-    <form @submit.prevent="addCat" class="add-form">
-      <input v-model="newName" placeholder="Название" required />
-      <select v-model="newType"><option value="expense">Расход</option><option value="income">Доход</option></select>
-      <input v-model="newIcon" placeholder="иконка" maxlength="2" class="icon-input" />
-      <input v-model="newColor" type="color" class="color-input" />
-      <button>+</button>
-    </form>
+  <div class="cat-page">
+    <PageHeader title="Категории"/>
 
-    <div v-for="c in cats" :key="c.id" class="item" :class="{ editing: editId === c.id }">
-      <template v-if="editId === c.id">
-        <input v-model="editName" placeholder="Название" />
-        <select v-model="editType"><option value="expense">Расход</option><option value="income">Доход</option></select>
-        <input v-model="editIcon" maxlength="2" class="icon-input" />
-        <input v-model="editColor" type="color" class="color-input" />
-        <button class="save" @click="save(c.id)">✓</button>
-        <button class="cancel" @click="editId = null">✕</button>
-      </template>
-      <template v-else>
-        <span class="cat-dot" :style="{ background: c.color || '#ccc' }">{{ c.icon || '•' }}</span>
-        <span class="cat-name" @click="startEdit(c)">{{ c.name }}</span>
-        <span class="badge" :class="c.type">{{ c.type === 'expense' ? 'Расход' : 'Доход' }}</span>
-        <button class="del" @click="del(c.id)">✕</button>
-      </template>
+    <div class="type-toggle">
+      <button :class="{ active: type === 'expense' }" @click="type = 'expense'">Расход</button>
+      <button :class="{ active: type === 'income' }" @click="type = 'income'">Доход</button>
+    </div>
+
+    <div class="cat-grid">
+      <div
+        v-for="c in filteredCats"
+        :key="c.id"
+        class="cat-card"
+        @click="edit(c)"
+      >
+        <span class="cat-icon" :style="{ background: c.color || '#ccc' }" v-html="iconSvg(c.icon)"></span>
+        <span class="cat-name">{{ c.name }}</span>
+      </div>
+
+      <button class="cat-card cat-add" @click="create">
+        <span class="cat-icon add-icon">+</span>
+        <span class="cat-name">Создать</span>
+      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { api } from '../api'
+import { ALL_ICONS } from '../data/icons'
 import PageHeader from '../components/PageHeader.vue'
 
+const router = useRouter()
+const type = ref('expense')
 const cats = ref([])
-const newName = ref('')
-const newType = ref('expense')
-const newIcon = ref('')
-const newColor = ref('#059669')
 
-const editId = ref(null)
-const editName = ref('')
-const editType = ref('expense')
-const editIcon = ref('')
-const editColor = ref('#059669')
+const filteredCats = computed(() => cats.value.filter(c => c.type === type.value))
 
-async function load() { cats.value = await api.getCategories() }
-
-async function addCat() {
-  await api.createCategory({ name: newName.value, type: newType.value, icon: newIcon.value || null, color: newColor.value || null })
-  newName.value = ''; newIcon.value = ''; newColor.value = '#059669'
-  load()
+function iconSvg(iconId) {
+  return iconId && ALL_ICONS.has(iconId) ? ALL_ICONS.get(iconId) : ''
 }
 
-function startEdit(c) {
-  editId.value = c.id
-  editName.value = c.name
-  editType.value = c.type
-  editIcon.value = c.icon || ''
-  editColor.value = c.color || '#059669'
+async function load() {
+  cats.value = await api.getCategories()
 }
 
-async function save(id) {
-  await api.updateCategory(id, { name: editName.value, type: editType.value, icon: editIcon.value || null, color: editColor.value || null })
-  editId.value = null
-  load()
+function edit(c) {
+  router.push(`/categories/${c.id}/edit`)
 }
 
-async function del(id) { await api.deleteCategory(id); load() }
+function create() {
+  router.push('/categories/create')
+}
 
 onMounted(load)
 </script>
 
 <style scoped>
-.mgmt { display: flex; flex-direction: column; gap: 8px; }
-.add-form { display: flex; gap: 6px; flex-wrap: wrap; }
-.add-form input, .add-form select { padding: 8px; border: 1px solid var(--border); border-radius: 8px; }
-.add-form input:first-child { flex: 1; min-width: 120px; }
-.icon-input { width: 48px; text-align: center; }
-.color-input { width: 40px; height: 40px; padding: 2px; cursor: pointer; }
-.add-form button { padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
-.item { display: flex; align-items: center; gap: 6px; background: var(--surface); padding: 8px 12px; border-radius: 10px; flex-wrap: wrap; }
-.item.editing { background: #ecfdf5; border: 1px solid var(--primary); }
-.item input, .item select { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
-.item input:first-child { flex: 1; min-width: 80px; }
-.cat-dot { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-.cat-name { flex: 1; font-size: 14px; cursor: pointer; padding: 2px 0; }
-.cat-name:hover { color: var(--primary); }
-.item .badge { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
-.badge.expense { background: #fef2f2; color: #ef4444; }
-.badge.income { background: #f0fdf4; color: #10b981; }
-.save { background: #10b981; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer; font-size: 14px; }
-.cancel { background: none; border: none; color: var(--text-secondary); cursor: pointer; font-size: 14px; padding: 4px; }
-.del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; padding: 4px; }
+.cat-page {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.type-toggle {
+  display: flex;
+  gap: 8px;
+  justify-content: space-around;
+  margin: -16px -16px 0;
+  padding: 20px 0;
+  background-color: var(--primary);
+  border-radius: 0 0 30px 30px;
+}
+
+.type-toggle button {
+  padding: 6px 16px;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  opacity: .6;
+  background-color: transparent;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.type-toggle button.active {
+  color: #fff;
+  opacity: 1;
+  border-bottom: 2px solid var(--border);
+}
+
+.cat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.cat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 6px;
+  background: var(--surface);
+  border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: var(--text);
+}
+
+.cat-card:hover {
+  background: #ecfdf5;
+  transform: translateY(-2px);
+}
+
+.cat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #fff;
+}
+
+.cat-icon svg {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+
+.cat-name {
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+.cat-add {
+  background: #f1f5f9;
+  border: 2px dashed var(--border);
+  justify-content: center;
+}
+
+.cat-add:hover {
+  border-color: var(--primary);
+  background: #ecfdf5;
+}
+
+.add-icon {
+  background: var(--primary);
+  font-size: 24px;
+  font-weight: 600;
+}
 </style>

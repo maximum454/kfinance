@@ -43,6 +43,24 @@ const routes = [
         meta: { hideHeader: true },
       },
       {
+        path: 'categories/create',
+        name: 'CategoryCreate',
+        component: () => import('../views/CategoryEdit.vue'),
+        meta: { hideHeader: true },
+      },
+      {
+        path: 'categories/:id/edit',
+        name: 'CategoryEdit',
+        component: () => import('../views/CategoryEdit.vue'),
+        meta: { hideHeader: true },
+      },
+      {
+        path: 'icons',
+        name: 'IconsGallery',
+        component: () => import('../views/IconsGallery.vue'),
+        meta: { hideHeader: true },
+      },
+      {
         path: 'accounts',
         name: 'Accounts',
         component: () => import('../views/Accounts.vue'),
