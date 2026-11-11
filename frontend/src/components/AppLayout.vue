@@ -4,6 +4,7 @@
       <button class="menu-btn" @click="menuOpen = !menuOpen">☰</button>
       <span class="title">Kfinance</span>
       <span class="balance" v-if="balance !== null">{{ balance.toLocaleString() }} ₸</span>
+      <router-link to="/history" class="header-link">📋</router-link>
     </header>
 
     <nav class="menu" :class="{ open: menuOpen }">
@@ -39,7 +40,6 @@ const balance = ref(null)
 
 const menuItems = [
   { path: '/', icon: '📊', label: 'Главная' },
-  { path: '/history', icon: '📋', label: 'История' },
   { path: '/accounts', icon: '🏦', label: 'Счета' },
   { path: '/categories', icon: '🏷️', label: 'Категории' },
   { path: '/tags', icon: '#️⃣', label: 'Теги' },
@@ -70,6 +70,8 @@ onMounted(async () => {
 .menu-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
 .title { flex: 1; font-weight: 600; font-size: 18px; }
 .balance { font-weight: 700; font-size: 16px; }
+.header-link { color: #fff; text-decoration: none; font-size: 20px; padding: 4px; border-radius: 6px; }
+.header-link:hover { background: rgba(255,255,255,.15); }
 .menu {
   position: fixed; top: 0; left: -260px; width: 260px; height: 100vh;
   background: var(--surface); z-index: 200; transition: left .2s;
@@ -81,7 +83,7 @@ onMounted(async () => {
   display: block; padding: 10px 12px; border-radius: 8px;
   text-decoration: none; color: var(--text); font-size: 15px;
 }
-.menu a:hover, .menu a.router-link-active { background: #eef2ff; color: var(--primary); }
+.menu a:hover, .menu a.router-link-active { background: #ecfdf5; color: var(--primary); }
 .menu hr { margin: 8px 0; border: none; border-top: 1px solid var(--border); }
 .user-info { padding: 10px 12px; margin-bottom: 8px; }
 .user-info strong { display: block; font-size: 16px; }

@@ -35,19 +35,19 @@ const cats = ref([])
 const newName = ref('')
 const newType = ref('expense')
 const newIcon = ref('')
-const newColor = ref('#6366f1')
+const newColor = ref('#059669')
 
 const editId = ref(null)
 const editName = ref('')
 const editType = ref('expense')
 const editIcon = ref('')
-const editColor = ref('#6366f1')
+const editColor = ref('#059669')
 
 async function load() { cats.value = await api.getCategories() }
 
 async function addCat() {
   await api.createCategory({ name: newName.value, type: newType.value, icon: newIcon.value || null, color: newColor.value || null })
-  newName.value = ''; newIcon.value = ''; newColor.value = '#6366f1'
+  newName.value = ''; newIcon.value = ''; newColor.value = '#059669'
   load()
 }
 
@@ -56,7 +56,7 @@ function startEdit(c) {
   editName.value = c.name
   editType.value = c.type
   editIcon.value = c.icon || ''
-  editColor.value = c.color || '#6366f1'
+  editColor.value = c.color || '#059669'
 }
 
 async function save(id) {
@@ -79,7 +79,7 @@ onMounted(load)
 .color-input { width: 40px; height: 40px; padding: 2px; cursor: pointer; }
 .add-form button { padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 18px; cursor: pointer; }
 .item { display: flex; align-items: center; gap: 6px; background: var(--surface); padding: 8px 12px; border-radius: 10px; flex-wrap: wrap; }
-.item.editing { background: #f8faff; border: 1px solid var(--primary); }
+.item.editing { background: #ecfdf5; border: 1px solid var(--primary); }
 .item input, .item select { padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; }
 .item input:first-child { flex: 1; min-width: 80px; }
 .cat-dot { width: 28px; height: 28px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 14px; }

@@ -25,7 +25,8 @@
       <h3>Расходы по категориям</h3>
       <svg viewBox="0 0 100 100" class="donut">
         <circle v-for="(s, i) in chartData" :key="i" cx="50" cy="50" r="42"
-          :stroke="s.color" :stroke-dasharray="s.dash" stroke-dashoffset="0"
+          :stroke="s.color" :stroke-dasharray="s.dash"
+          :stroke-dashoffset="s.offset"
           stroke-width="16" fill="none" :style="{ transform: 'rotate(-90deg)', transformOrigin: 'center' }"
         />
         <text x="50" y="48" text-anchor="middle" font-size="14" font-weight="bold">{{ activeType === 'expense' ? data?.totals.expense.toLocaleString() : data?.totals.income.toLocaleString() }}</text>
@@ -65,7 +66,7 @@ const periods = [
 const period = ref('month')
 const activeType = ref('expense')
 const data = ref(null)
-const colors = ['#6366f1','#f59e0b','#ef4444','#10b981','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#e11d48','#0ea5e9']
+const colors = ['#059669','#f59e0b','#ef4444','#10b981','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#84cc16','#e11d48','#0ea5e9']
 
 function getPeriodDates() {
   const now = new Date()
@@ -93,12 +94,16 @@ const chartData = computed(() => {
   const cats = categories.value
   if (!cats.length) return []
   const total = cats.reduce((s, c) => s + c.percent, 0)
-  let offset = 0
+  if (total === 0) return []
+  const circumference = 2 * Math.PI * 42
+  let cumulative = 0
   return cats.map((c, i) => {
-    const pct = c.percent / total * 100
-    const dash = `${pct} ${100 - pct}`
-    const seg = { ...c, dash, offset }
-    offset = pct
+    const pct = c.percent / total
+    const len = pct * circumference
+    const gap = circumference - len
+    const dash = `${len} ${gap}`
+    const seg = { ...c, dash, offset: -cumulative }
+    cumulative += len
     seg.color = c.category?.color || colors[i % colors.length]
     return seg
   })

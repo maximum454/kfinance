@@ -82,7 +82,7 @@ input, select, textarea { padding: 12px; border: 1px solid var(--border); border
 input:focus, select:focus, textarea:focus { border-color: var(--primary); }
 .cat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
 .cat-item { text-align: center; padding: 10px 4px; border: 2px solid transparent; border-radius: 12px; cursor: pointer; background: #f8fafc; }
-.cat-item.selected { border-color: var(--primary); background: #eef2ff; }
+.cat-item.selected { border-color: var(--primary); background: #ecfdf5; }
 .cat-item span { font-size: 24px; display: block; }
 .cat-item small { font-size: 11px; color: var(--text-secondary); }
 button[type=submit] { padding: 14px; background: var(--primary); color: #fff; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 16px; }
