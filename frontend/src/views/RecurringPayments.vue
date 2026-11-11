@@ -9,7 +9,11 @@
       <button>+</button>
     </form>
     <div v-for="r in rps" :key="r.id" class="item">
-      <span>{{ r.category?.icon || '🔄' }} {{ Number(r.amount).toLocaleString() }} ₸ · {{ r.frequency }}</span>
+      <span class="item-icon">
+        <IconRenderer v-if="r.category?.icon && isLucideIcon(r.category.icon)" :name="r.category.icon" size="18" />
+        <span v-else>{{ r.category?.icon || '🔄' }}</span>
+      </span>
+      <span>{{ Number(r.amount).toLocaleString() }} ₸ · {{ r.frequency }}</span>
       <small>{{ r.next_date }}</small>
       <button class="del" @click="del(r.id)">✕</button>
     </div>
@@ -21,23 +25,53 @@
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
 import PageHeader from '../components/PageHeader.vue'
+import IconRenderer from '../components/IconRenderer.vue'
+import { ALL_ICONS } from '../data/icons'
+
+function isLucideIcon(id) {
+  return id && ALL_ICONS.has(id)
+}
+
 const rps = ref([])
 const accs = ref([])
 const acct = ref('')
 const amount = ref('')
 const freq = ref('monthly')
 const nextDate = ref('')
-async function load() { rps.value = await api.getRecurringPayments(); accs.value = await api.getAccounts(); }
-async function addR() { await api.createRecurringPayment({ account_id: acct.value, amount: amount.value, type: 'expense', frequency: freq.value, next_date: nextDate.value }); amount.value = ''; nextDate.value = ''; load() }
-async function del(id) { await api.deleteRecurringPayment(id); load() }
+
+async function load() {
+  rps.value = await api.getRecurringPayments()
+  accs.value = await api.getAccounts()
+}
+
+async function addR() {
+  await api.createRecurringPayment({
+    account_id: acct.value,
+    amount: amount.value,
+    type: 'expense',
+    frequency: freq.value,
+    next_date: nextDate.value
+  })
+  amount.value = ''
+  nextDate.value = ''
+  load()
+}
+
+async function del(id) {
+  await api.deleteRecurringPayment(id)
+  load()
+}
+
 onMounted(load)
 </script>
+
 <style scoped>
 .mgmt { display: flex; flex-direction: column; gap: 8px; }
 .add-form { display: flex; gap: 8px; flex-wrap: wrap; }
 .add-form input, .add-form select { padding: 8px; border: 1px solid var(--border); border-radius: 8px; min-width: 80px; flex: 1; }
 .add-form button { padding: 8px 16px; background: var(--primary); color: #fff; border: none; border-radius: 8px; font-size: 18px; }
 .item { display: flex; align-items: center; gap: 8px; background: var(--surface); padding: 10px 12px; border-radius: 10px; }
+.item-icon { display: flex; align-items: center; width: 24px; justify-content: center; color: var(--text); }
 .item small { color: var(--text-secondary); font-size: 12px; }
 .del { background: none; border: none; color: var(--danger); cursor: pointer; font-size: 16px; margin-left: auto; }
 .empty { text-align: center; color: var(--text-secondary); padding: 20px; }

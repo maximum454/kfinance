@@ -23,11 +23,11 @@
           class="icon-cell"
           :class="{ selected: icon.id === selectedIcon }"
           @click="selectedIcon = icon.id"
-          v-html="icon.svg"
-        />
+        >
+          <IconRenderer :name="icon.lucide" size="28" />
+        </div>
         <button class="icon-cell icon-more" @click="openIcons">
           <span>•••</span>
-          <small>ещё</small>
         </button>
       </div>
 
@@ -60,6 +60,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { api } from '../api'
 import { iconGroups, ALL_ICONS } from '../data/icons'
 import PageHeader from '../components/PageHeader.vue'
+import IconRenderer from '../components/IconRenderer.vue'
 
 const router = useRouter()
 const route = useRoute()
@@ -80,7 +81,7 @@ const presetColors = [
 const isCustomColor = computed(() => !presetColors.includes(selectedColor.value))
 
 const allIcons = computed(() => iconGroups.flatMap(g => g.icons))
-const firstIcons = computed(() => allIcons.value.slice(0, 7))
+const firstIcons = computed(() => allIcons.value.slice(0, 15))
 
 function openIcons() {
   const ret = isEdit.value ? `/categories/${route.params.id}/edit` : '/categories/create'
@@ -139,6 +140,7 @@ async function save() {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  padding-bottom: 90px;
 }
 
 .form {
@@ -196,7 +198,7 @@ async function save() {
 .icon-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 16px;
 }
 
 .icon-cell {
@@ -206,7 +208,7 @@ async function save() {
   aspect-ratio: 1;
   background: var(--surface);
   border: 2px solid transparent;
-  border-radius: 12px;
+  border-radius: 50%;
   cursor: pointer;
   padding: 10px;
   transition: all 0.15s;
@@ -242,8 +244,8 @@ async function save() {
 
 .color-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 15px;
 }
 
 .color-cell {
@@ -297,6 +299,11 @@ async function save() {
   font-weight: 600;
   cursor: pointer;
   margin-top: 8px;
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  margin: 0 16px;
 }
 
 .save-btn:disabled {

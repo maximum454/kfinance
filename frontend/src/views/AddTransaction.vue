@@ -9,7 +9,7 @@
       <div class="amount-field" :class="{ invalid: errors.amount }">
         <input ref="amountEl" :value="amount" @input="onAmountInput" @keydown="onAmountKeydown" type="text" inputmode="decimal" placeholder="0" aria-label="Сумма" autofocus />
         <span class="amount-cur">KZT</span>
-        <svg class="amount-calc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2"/><path d="M8 6h8M8 11h.01M12 11h.01M16 11h.01M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01M16 19h.01"/></svg>
+        <IconRenderer name="calculator" size="24" class="amount-calc" />
       </div>
       <select ref="accountEl" v-model="account_id" :class="{ invalid: errors.account }">
         <option value="">— Выберите счёт —</option>
@@ -19,7 +19,8 @@
       <div ref="categoryEl" class="cat-grid" :class="{ invalid: errors.category }">
         <div v-for="c in filteredCats" :key="c.id" class="cat-item"
              :class="{ selected: category_id === c.id }" @click="category_id = c.id">
-          <span>{{ c.icon || '•' }}</span>
+          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" size="24" />
+          <span v-else class="cat-fallback">{{ c.icon || '•' }}</span>
           <small>{{ c.name }}</small>
         </div>
       </div>
@@ -30,7 +31,7 @@
           <small>{{ b.label }}</small>
         </button>
         <div class="date-cal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <IconRenderer name="calendar" size="20" />
           <input type="date" v-model="customDate" :max="todayStr" aria-label="Выбрать дату"/>
         </div>
       </div>
@@ -49,6 +50,12 @@ import {ref, computed, onMounted, watch} from 'vue'
 import {useRouter, useRoute} from 'vue-router'
 import {api} from '../api'
 import PageHeader from '../components/PageHeader.vue'
+import IconRenderer from '../components/IconRenderer.vue'
+import { ALL_ICONS } from '../data/icons'
+
+function isLucideIcon(id) {
+  return id && ALL_ICONS.has(id)
+}
 
 const router = useRouter()
 const route = useRoute()
@@ -293,8 +300,6 @@ input:focus, select:focus, textarea:focus {
 }
 
 .amount-calc {
-  width: 24px;
-  height: 24px;
   min-width: 24px;
   color: var(--primary);
 }
@@ -329,9 +334,18 @@ input:focus, select:focus, textarea:focus {
   background: #ecfdf5;
 }
 
-.cat-item span {
-  font-size: 24px;
+.cat-item svg {
   display: block;
+  margin: 0 auto;
+  width: 24px;
+  height: 24px;
+  color: var(--text);
+}
+
+.cat-fallback {
+  display: block;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .cat-item small {

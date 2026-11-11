@@ -14,7 +14,10 @@
         class="cat-card"
         @click="edit(c)"
       >
-        <span class="cat-icon" :style="{ background: c.color || '#ccc' }" v-html="iconSvg(c.icon)"></span>
+        <span class="cat-icon" :style="{ background: c.color || '#ccc' }">
+          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" size="24" />
+          <span v-else class="cat-icon-fallback">{{ c.icon || '•' }}</span>
+        </span>
         <span class="cat-name">{{ c.name }}</span>
       </div>
 
@@ -30,18 +33,19 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { api } from '../api'
-import { ALL_ICONS } from '../data/icons'
 import PageHeader from '../components/PageHeader.vue'
+import IconRenderer from '../components/IconRenderer.vue'
+import { ALL_ICONS } from '../data/icons'
+
+function isLucideIcon(id) {
+  return id && ALL_ICONS.has(id)
+}
 
 const router = useRouter()
 const type = ref('expense')
 const cats = ref([])
 
 const filteredCats = computed(() => cats.value.filter(c => c.type === type.value))
-
-function iconSvg(iconId) {
-  return iconId && ALL_ICONS.has(iconId) ? ALL_ICONS.get(iconId) : ''
-}
 
 async function load() {
   cats.value = await api.getCategories()
@@ -125,14 +129,12 @@ onMounted(load)
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
+  font-size: 24px;
   color: #fff;
 }
 
-.cat-icon svg {
-  width: 24px;
-  height: 24px;
-  color: #fff;
+.cat-icon-fallback {
+  line-height: 1;
 }
 
 .cat-name {

@@ -42,7 +42,10 @@
     </div>
     <div v-if="chartData.length" class="category-list">
       <div v-for="c in categories" :key="c.category_id" class="cat-row">
-        <span class="cat-dot" :style="{ background: c.category?.color || '#ccc' }">{{ c.category?.icon || '•' }}</span>
+        <span class="cat-dot" :style="{ background: c.category?.color || '#ccc' }">
+          <IconRenderer v-if="c.category?.icon && isLucideIcon(c.category.icon)" :name="c.category.icon" size="16" />
+          <span v-else>{{ c.category?.icon || '•' }}</span>
+        </span>
         <span class="cat-name">{{ c.category?.name || 'Без категории' }}</span>
         <span class="cat-pct">{{ c.percent }}%</span>
         <span class="cat-sum">{{ c.total.toLocaleString() }} ₸</span>
@@ -58,6 +61,12 @@
 <script setup>
 import {ref, computed, watch, onMounted} from 'vue'
 import {api} from '../api'
+import IconRenderer from '../components/IconRenderer.vue'
+import { ALL_ICONS } from '../data/icons'
+
+function isLucideIcon(id) {
+  return id && ALL_ICONS.has(id)
+}
 
 const periods = [
   {key: 'day', label: 'День'},
@@ -403,6 +412,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   font-size: 16px;
+  color: #fff;
 }
 
 .cat-name {

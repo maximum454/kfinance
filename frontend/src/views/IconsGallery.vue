@@ -11,8 +11,9 @@
           class="icon-cell"
           :class="{ selected: selected === icon.id }"
           @click="select(icon.id)"
-          v-html="icon.svg"
-        />
+        >
+          <IconRenderer :name="icon.lucide" size="28" />
+        </button>
       </div>
     </div>
   </div>
@@ -23,6 +24,7 @@ import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { iconGroups } from '../data/icons'
 import PageHeader from '../components/PageHeader.vue'
+import IconRenderer from '../components/IconRenderer.vue'
 
 const route = useRoute()
 const router = useRouter()

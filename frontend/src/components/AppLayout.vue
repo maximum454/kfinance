@@ -1,10 +1,14 @@
 <template>
   <div class="layout">
     <header class="header" v-if="!route.meta.hideHeader">
-      <button class="menu-btn" @click="menuOpen = !menuOpen">☰</button>
+      <button class="menu-btn" @click="menuOpen = !menuOpen">
+        <IconRenderer name="menu" size="24" />
+      </button>
       <span class="title">Kfinance</span>
       <span class="balance" v-if="balance !== null">{{ balance.toLocaleString() }} ₸</span>
-      <router-link to="/history" class="header-link">📋</router-link>
+      <router-link to="/history" class="header-link">
+        <IconRenderer name="list" size="20" />
+      </router-link>
     </header>
 
     <nav class="menu" :class="{ open: menuOpen }">
@@ -13,10 +17,14 @@
         <small>{{ auth.user.email }}</small>
       </div>
       <router-link v-for="item in menuItems" :key="item.path" :to="item.path" @click="menuOpen = false">
-        {{ item.icon }} {{ item.label }}
+        <IconRenderer :name="item.icon" size="18" />
+        {{ item.label }}
       </router-link>
       <hr />
-      <a href="#" @click.prevent="handleLogout">🚪 Выйти</a>
+      <a href="#" @click.prevent="handleLogout">
+        <IconRenderer name="log-out" size="18" />
+        Выйти
+      </a>
     </nav>
 
     <main class="content" @click="menuOpen = false">
@@ -32,6 +40,7 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { api } from '../api'
+import IconRenderer from '../components/IconRenderer.vue'
 
 const route = useRoute()
 const auth = useAuthStore()
@@ -40,11 +49,11 @@ const menuOpen = ref(false)
 const balance = ref(null)
 
 const menuItems = [
-  { path: '/', icon: '📊', label: 'Главная' },
-  { path: '/accounts', icon: '🏦', label: 'Счета' },
-  { path: '/categories', icon: '🏷️', label: 'Категории' },
-  { path: '/tags', icon: '#️⃣', label: 'Теги' },
-  { path: '/recurring', icon: '🔄', label: 'Регулярные' },
+  { path: '/', icon: 'layout-dashboard', label: 'Главная' },
+  { path: '/accounts', icon: 'building', label: 'Счета' },
+  { path: '/categories', icon: 'tags', label: 'Категории' },
+  { path: '/tags', icon: 'hash', label: 'Теги' },
+  { path: '/recurring', icon: 'refresh-cw', label: 'Регулярные' },
 ]
 
 async function handleLogout() {
@@ -68,10 +77,10 @@ onMounted(async () => {
   background: var(--primary); color: #fff; padding: 12px 16px;
   display: flex; align-items: center; gap: 12px;
 }
-.menu-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+.menu-btn { background: none; border: none; color: #fff; cursor: pointer; display: flex; padding: 0; }
 .title { flex: 1; font-weight: 600; font-size: 18px; }
 .balance { font-weight: 700; font-size: 16px; text-align: center}
-.header-link { color: #fff; text-decoration: none; font-size: 20px; padding: 4px; border-radius: 6px; }
+.header-link { color: #fff; text-decoration: none; display: flex; padding: 4px; border-radius: 6px; }
 .header-link:hover { background: rgba(255,255,255,.15); }
 .menu {
   position: fixed; top: 0; left: -260px; width: 260px; height: 100vh;
@@ -81,7 +90,7 @@ onMounted(async () => {
 }
 .menu.open { left: 0; }
 .menu a {
-  display: block; padding: 10px 12px; border-radius: 8px;
+  display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-radius: 8px;
   text-decoration: none; color: var(--text); font-size: 15px;
 }
 .menu a:hover, .menu a.router-link-active { background: #ecfdf5; color: var(--primary); }
