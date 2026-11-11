@@ -12,7 +12,13 @@
         </button>
       </div>
       <div class="period-select-date">
-          26.окт. - 1 нояб.
+        <button class="period-select-date__arrow period-select-date__arrow-prev" @click="prevPeriod" aria-label="Предыдущий период">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+        <span>{{ periodDateLabel }}</span>
+        <button class="period-select-date__arrow period-select-date__arrow-next" :class="{ 'is-disabled': periodOffset === 0 }" @click="nextPeriod" aria-label="Следующий период">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
       </div>
       <svg viewBox="0 0 100 100" class="donut">
         <circle v-for="(s, i) in chartData" :key="i" cx="50" cy="50" r="42"
@@ -53,10 +59,40 @@ const periods = [
 const period = ref('month')
 const activeType = ref('expense')
 const data = ref(null)
+const periodOffset = ref(0)
+
+const anchorDate = computed(() => {
+  const d = new Date()
+  const n = periodOffset.value
+  switch (period.value) {
+    case 'day':
+      d.setDate(d.getDate() + n)
+      break
+    case 'week':
+      d.setDate(d.getDate() + n * 7)
+      break
+    case 'month':
+      d.setMonth(d.getMonth() + n)
+      break
+    case 'year':
+      d.setFullYear(d.getFullYear() + n)
+      break
+  }
+  return d
+})
+
+function prevPeriod() {
+  periodOffset.value--
+}
+
+function nextPeriod() {
+  if (periodOffset.value < 0) periodOffset.value++
+}
+
 const colors = ['#059669', '#f59e0b', '#ef4444', '#10b981', '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#06b6d4', '#84cc16', '#e11d48', '#0ea5e9']
 
 function getPeriodDates() {
-  const now = new Date()
+  const now = anchorDate.value
   const y = now.getFullYear(), m = now.getMonth()
   switch (period.value) {
     case 'day':
@@ -76,6 +112,30 @@ function getPeriodDates() {
 function pad(n) {
   return String(n).padStart(2, '0')
 }
+
+const monthShort = ['янв.', 'февр.', 'мар.', 'апр.', 'мая', 'июн.', 'июл.', 'авг.', 'сент.', 'окт.', 'нояб.', 'дек.']
+const monthFull = ['январь', 'февраль', 'март', 'апрель', 'май', 'июнь', 'июль', 'август', 'сентябрь', 'октябрь', 'ноябрь', 'декабрь']
+
+function fmtShort(d) {
+  return `${d.getDate()} ${monthShort[d.getMonth()]}`
+}
+
+const periodDateLabel = computed(() => {
+  const now = anchorDate.value
+  switch (period.value) {
+    case 'day':
+      return fmtShort(now)
+    case 'week': {
+      const d = new Date(now)
+      d.setDate(d.getDate() - 7)
+      return `${fmtShort(d)} - ${fmtShort(now)}`
+    }
+    case 'month':
+      return `${monthFull[now.getMonth()]} ${now.getFullYear()}`
+    default:
+      return String(now.getFullYear())
+  }
+})
 
 function toStr(d) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
@@ -112,7 +172,11 @@ async function load() {
   }
 }
 
-watch(period, load)
+watch(period, () => {
+  periodOffset.value = 0
+  load()
+})
+watch(periodOffset, load)
 onMounted(load)
 </script>
 
@@ -143,6 +207,50 @@ onMounted(load)
   color: var(--primary);
   border-color: var(--primary);
   border-bottom: 2px solid;
+}
+
+.period-select-date {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  font-size: 15px;
+  color: var(--text-secondary);
+}
+
+.period-select-date__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--primary);
+  cursor: pointer;
+  transition: background .15s ease, opacity .15s ease, transform .1s ease;
+}
+
+.period-select-date__arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.period-select-date__arrow:hover:not(.is-disabled) {
+  background: rgba(5, 150, 105, .12);
+}
+
+.period-select-date__arrow:active:not(.is-disabled) {
+  transform: scale(.9);
+}
+
+.period-select-date__arrow.is-disabled {
+  opacity: .3;
+  cursor: default;
+  pointer-events: none;
 }
 
 .chart-section {
