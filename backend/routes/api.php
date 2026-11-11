@@ -4,6 +4,7 @@ use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\ExchangeRateController;
 use App\Http\Controllers\RecurringPaymentController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\TransactionController;
@@ -32,6 +33,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Analytics
     Route::get('/analytics', [AnalyticsController::class, 'index']);
+
+    // Exchange rates
+    Route::get('/rates', [ExchangeRateController::class, 'index']);
 
     // Recurring Payments
     Route::get('/recurring-payments', [RecurringPaymentController::class, 'index']);

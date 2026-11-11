@@ -50,6 +50,7 @@ export const api = {
   updateTransaction: (id, d) => request('/transactions/' + id, { method: 'PUT', body: JSON.stringify(d) }),
   deleteTransaction: (id) => request('/transactions/' + id, { method: 'DELETE' }),
   getAnalytics: (p) => { const q = new URLSearchParams(p).toString(); return request('/analytics' + (q ? '?' + q : '')) },
+  getRates: () => request('/rates'),
   getTags: () => request('/tags'),
   createTag: (d) => request('/tags', { method: 'POST', body: JSON.stringify(d) }),
   deleteTag: (id) => request('/tags/' + id, { method: 'DELETE' }),

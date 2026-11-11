@@ -30,11 +30,12 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { api } from '../api'
 
 const router = useRouter()
-const type = ref('expense')
+const route = useRoute()
+const type = ref(['income', 'expense'].includes(route.query.type) ? route.query.type : 'expense')
 const amount = ref('')
 const account_id = ref('')
 const category_id = ref(null)

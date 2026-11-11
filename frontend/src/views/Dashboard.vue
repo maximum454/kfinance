@@ -1,5 +1,14 @@
 <template>
   <div class="dashboard">
+    <div class="rates" v-if="rates.length">
+      <div class="rate" v-for="r in rates" :key="r.code">
+        <span class="rate-code">{{ r.code }}</span>
+        <span class="rate-value">
+          <span class="rate-direction" :class="'rate-direction--' + r.direction">{{ r.direction === 'up' ? '▲' : r.direction === 'down' ? '▼' : '–' }}</span>
+          {{ r.value.toFixed(2) }} ₸
+        </span>
+      </div>
+    </div>
     <div class="type-toggle">
       <button :class="{ active: activeType === 'expense' }" @click="activeType = 'expense'">Расходы</button>
       <button :class="{ active: activeType === 'income' }" @click="activeType = 'income'">Доходы</button>
@@ -42,7 +51,7 @@
 
     <p v-else class="empty">Нет операций за период</p>
 
-    <router-link to="/add" class="fab">+</router-link>
+    <router-link :to="{ path: '/add', query: { type: activeType } }" class="fab">+</router-link>
   </div>
 </template>
 
@@ -60,6 +69,7 @@ const period = ref('month')
 const activeType = ref('expense')
 const data = ref(null)
 const periodOffset = ref(0)
+const rates = ref([])
 
 const anchorDate = computed(() => {
   const d = new Date()
@@ -172,12 +182,26 @@ async function load() {
   }
 }
 
+async function loadRates() {
+  try {
+    const r = await api.getRates()
+    const wanted = ['USD', 'EUR', 'RUB', 'CNY']
+    rates.value = wanted
+      .map(c => (r?.rates || []).find(x => x.code === c))
+      .filter(x => x && x.value != null)
+  } catch { /* блок скрыт при ошибке */
+  }
+}
+
 watch(period, () => {
   periodOffset.value = 0
   load()
 })
 watch(periodOffset, load)
-onMounted(load)
+onMounted(() => {
+  load()
+  loadRates()
+})
 </script>
 
 <style scoped>
@@ -185,6 +209,58 @@ onMounted(load)
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.rates {
+  display: flex;
+  gap: 8px;
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 12px 8px;
+  box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+.rate {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-right: 1px solid var(--border);
+}
+
+.rate:last-child {
+  border-right: none;
+}
+
+.rate-code {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.rate-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.rate-direction {
+  font-size: 11px;
+  margin-right: 4px;
+}
+
+.rate-direction--up {
+  color: #059669;
+}
+
+.rate-direction--down {
+  color: #dc2626;
+}
+
+.rate-direction--flat {
+  color: var(--text-secondary);
 }
 
 .period-select {
