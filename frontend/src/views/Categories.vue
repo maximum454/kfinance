@@ -49,6 +49,7 @@ const filteredCats = computed(() => cats.value.filter(c => c.type === type.value
 
 async function load() {
   cats.value = await api.getCategories()
+  console.log(cats.value)
 }
 
 function edit(c) {
@@ -99,7 +100,7 @@ onMounted(load)
 .cat-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  gap: 16px;
 }
 
 .cat-card {
@@ -107,8 +108,7 @@ onMounted(load)
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 14px 6px;
-  background: var(--surface);
+
   border: none;
   border-radius: 14px;
   cursor: pointer;

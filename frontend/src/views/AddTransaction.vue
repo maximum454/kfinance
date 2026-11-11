@@ -11,6 +11,7 @@
         <span class="amount-cur">KZT</span>
         <IconRenderer name="calculator" size="24" class="amount-calc" />
       </div>
+      <h3>Счёт</h3>
       <select ref="accountEl" v-model="account_id" :class="{ invalid: errors.account }">
         <option value="">— Выберите счёт —</option>
         <option v-for="a in accounts" :key="a.id" :value="a.id">{{ a.name }}</option>

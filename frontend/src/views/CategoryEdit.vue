@@ -10,9 +10,17 @@
         maxlength="30"
       />
 
-      <div class="type-toggle">
-        <button :class="{ active: type === 'expense' }" @click="type = 'expense'">Расход</button>
-        <button :class="{ active: type === 'income' }" @click="type = 'income'">Доход</button>
+      <div class="type-check" role="group" aria-label="Тип категории">
+        <label class="type-option" :class="{ checked: type === 'expense' }">
+          <input type="checkbox" :checked="type === 'expense'" @change="type = 'expense'" />
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="label">Расход</span>
+        </label>
+        <label class="type-option" :class="{ checked: type === 'income' }">
+          <input type="checkbox" :checked="type === 'income'" @change="type = 'income'" />
+          <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span>
+          <span class="label">Доход</span>
+        </label>
       </div>
 
       <label class="section-label">Иконка</label>
@@ -161,32 +169,6 @@ async function save() {
   border-color: var(--primary);
 }
 
-.type-toggle {
-  display: flex;
-  gap: 8px;
-  justify-content: space-around;
-  padding: 14px 0;
-  background-color: var(--primary);
-  border-radius: 16px;
-}
-
-.type-toggle button {
-  padding: 6px 16px;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  opacity: .6;
-  background-color: transparent;
-  color: #fff;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.type-toggle button.active {
-  opacity: 1;
-  border-bottom: 2px solid #fff;
-}
-
 .section-label {
   font-size: 14px;
   font-weight: 600;
@@ -308,5 +290,129 @@ async function save() {
 
 .save-btn:disabled {
   opacity: 0.6;
+}
+
+/* Контейнер для переключателей */
+.type-check {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+/* Карточка опции (label) */
+.type-option {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+/* Ховер на карточку */
+.type-option:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+/* Скрываем дефолтный инпут */
+.type-option input[type="checkbox"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Кастомный кавадратик под галочку */
+.type-option .box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+/* SVG Галочка */
+.type-option .box svg {
+  width: 14px;
+  height: 14px;
+  color: #ffffff;
+  stroke-dasharray: 24;
+  stroke-dashoffset: 24;
+  transition: stroke-dashoffset 0.25s ease 0.05s;
+}
+
+/* Текст внутри */
+.type-option .label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  transition: color 0.2s ease;
+}
+
+/* Эффект нажатия (Active / Tap) */
+.type-option:active {
+  transform: scale(0.97);
+}
+
+/* ==========================================
+   АКТИВНЫЕ СОСТОЯНИЯ (checked)
+   ========================================== */
+
+/* Общий checked стиль */
+.type-option.checked {
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.08);
+}
+
+.type-option.checked .box svg {
+  stroke-dashoffset: 0;
+}
+
+/* 1. Стили для РАСХОДА (зеленый как в приложении или красный/оранжевый) */
+.type-option.checked:has(input[type="checkbox"]:checked) {
+  /* Если нужно сделать разные цвета для Расход/Доход: */
+}
+
+/* Если тип 'expense' (Расход) — Активный */
+.type-option:first-child.checked {
+  border-color: #ef4444;
+  background-color: #fef2f2;
+}
+.type-option:first-child.checked .box {
+  background-color: #ef4444;
+  border-color: #ef4444;
+}
+.type-option:first-child.checked .label {
+  color: #991b1b;
+}
+
+/* Если тип 'income' (Доход) — Активный */
+.type-option:last-child.checked {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+.type-option:last-child.checked .box {
+  background-color: #10b981;
+  border-color: #10b981;
+}
+.type-option:last-child.checked .label {
+  color: #065f46;
 }
 </style>
