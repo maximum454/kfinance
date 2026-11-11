@@ -32,7 +32,7 @@
           :class="{ selected: icon.id === selectedIcon }"
           @click="selectedIcon = icon.id"
         >
-          <IconRenderer :name="icon.lucide" size="28" />
+          <IconRenderer :name="icon.lucide" :size="28" />
         </div>
         <button class="icon-cell icon-more" @click="openIcons">
           <span>•••</span>
@@ -89,7 +89,25 @@ const presetColors = [
 const isCustomColor = computed(() => !presetColors.includes(selectedColor.value))
 
 const allIcons = computed(() => iconGroups.flatMap(g => g.icons))
-const firstIcons = computed(() => allIcons.value.slice(0, 15))
+const firstIcons = computed(() => {
+  const baseIcons = allIcons.value.slice(0, 15)
+  // Если выбрана какая-то иконка
+  if (selectedIcon.value) {
+    // Проверяем, есть ли она уже в базовой семерке/пятнашке
+    const exists = baseIcons.some(icon => icon.id === selectedIcon.value)
+
+    // Если её там нет, но мы знаем её объект — добавляем/ставим на первое место
+    if (!exists) {
+      const foundIcon = allIcons.value.find(icon => icon.id === selectedIcon.value)
+      if (foundIcon) {
+        // Берем первые 14 штук и подставляем выбранную на первое место
+        return [foundIcon, ...baseIcons.slice(0, 14)]
+      }
+    }
+  }
+
+  return baseIcons
+})
 
 function openIcons() {
   const ret = isEdit.value ? `/categories/${route.params.id}/edit` : '/categories/create'
@@ -97,11 +115,13 @@ function openIcons() {
 }
 
 onMounted(async () => {
-  const icon = route.query.icon
-  if (icon && ALL_ICONS.has(icon)) {
-    selectedIcon.value = icon
+  // 1. Сначала пытаемся получить иконку из query-параметра (если пришли со страницы выбора)
+  const queryIcon = route.query.icon
+  if (queryIcon && ALL_ICONS.has(queryIcon)) {
+    selectedIcon.value = queryIcon
   }
 
+  // 2. Если это режим редактирования, подгружаем данные категории
   if (isEdit.value) {
     try {
       const cats = await api.getCategories()
@@ -109,7 +129,10 @@ onMounted(async () => {
       if (cat) {
         name.value = cat.name
         type.value = cat.type
-        selectedIcon.value = cat.icon || ''
+        // Загружаем иконку с сервера ТОЛЬКО ЕСЛИ в query-параметрах нет свежовыбранной иконки
+        if (!queryIcon) {
+          selectedIcon.value = cat.icon || ''
+        }
         selectedColor.value = cat.color || '#059669'
         customColor.value = selectedColor.value
       }

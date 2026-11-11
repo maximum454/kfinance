@@ -12,7 +12,7 @@
           :class="{ selected: selected === icon.id }"
           @click="select(icon.id)"
         >
-          <IconRenderer :name="icon.lucide" size="28" />
+          <IconRenderer :name="icon.lucide" :size="28" />
         </button>
       </div>
     </div>

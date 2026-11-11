@@ -9,7 +9,7 @@
       <div class="amount-field" :class="{ invalid: errors.amount }">
         <input ref="amountEl" :value="amount" @input="onAmountInput" @keydown="onAmountKeydown" type="text" inputmode="decimal" placeholder="0" aria-label="Сумма" autofocus />
         <span class="amount-cur">KZT</span>
-        <IconRenderer name="calculator" size="24" class="amount-calc" />
+        <IconRenderer name="calculator" :size="24" class="amount-calc" />
       </div>
       <h3>Счёт</h3>
       <select ref="accountEl" v-model="account_id" :class="{ invalid: errors.account }">
@@ -20,7 +20,7 @@
       <div ref="categoryEl" class="cat-grid" :class="{ invalid: errors.category }">
         <div v-for="c in filteredCats" :key="c.id" class="cat-item"
              :class="{ selected: category_id === c.id }" @click="category_id = c.id">
-          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" size="24" />
+          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" :size="24" />
           <span v-else class="cat-fallback">{{ c.icon || '•' }}</span>
           <small>{{ c.name }}</small>
         </div>
@@ -32,7 +32,7 @@
           <small>{{ b.label }}</small>
         </button>
         <div class="date-cal">
-          <IconRenderer name="calendar" size="20" />
+          <IconRenderer name="calendar" :size="20" />
           <input type="date" v-model="customDate" :max="todayStr" aria-label="Выбрать дату"/>
         </div>
       </div>

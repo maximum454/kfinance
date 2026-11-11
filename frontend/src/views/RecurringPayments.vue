@@ -10,7 +10,7 @@
     </form>
     <div v-for="r in rps" :key="r.id" class="item">
       <span class="item-icon">
-        <IconRenderer v-if="r.category?.icon && isLucideIcon(r.category.icon)" :name="r.category.icon" size="18" />
+        <IconRenderer v-if="r.category?.icon && isLucideIcon(r.category.icon)" :name="r.category.icon" :size="18" />
         <span v-else>{{ r.category?.icon || '🔄' }}</span>
       </span>
       <span>{{ Number(r.amount).toLocaleString() }} ₸ · {{ r.frequency }}</span>

@@ -2,12 +2,12 @@
   <div class="layout">
     <header class="header" v-if="!route.meta.hideHeader">
       <button class="menu-btn" @click="menuOpen = !menuOpen">
-        <IconRenderer name="menu" size="24" />
+        <IconRenderer name="menu" :size="24" />
       </button>
       <span class="title">Kfinance</span>
       <span class="balance" v-if="balance !== null">{{ balance.toLocaleString() }} ₸</span>
       <router-link to="/history" class="header-link">
-        <IconRenderer name="list" size="20" />
+        <IconRenderer name="list" :size="20" />
       </router-link>
     </header>
 
@@ -17,12 +17,12 @@
         <small>{{ auth.user.email }}</small>
       </div>
       <router-link v-for="item in menuItems" :key="item.path" :to="item.path" @click="menuOpen = false">
-        <IconRenderer :name="item.icon" size="18" />
+        <IconRenderer :name="item.icon" :size="18" />
         {{ item.label }}
       </router-link>
       <hr />
       <a href="#" @click.prevent="handleLogout">
-        <IconRenderer name="log-out" size="18" />
+        <IconRenderer name="log-out" :size="18" />
         Выйти
       </a>
     </nav>

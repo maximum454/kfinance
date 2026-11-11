@@ -15,7 +15,7 @@
         @click="edit(c)"
       >
         <span class="cat-icon" :style="{ background: c.color || '#ccc' }">
-          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" size="24" />
+          <IconRenderer v-if="c.icon && isLucideIcon(c.icon)" :name="c.icon" :size="24" />
           <span v-else class="cat-icon-fallback">{{ c.icon || '•' }}</span>
         </span>
         <span class="cat-name">{{ c.name }}</span>
@@ -49,7 +49,6 @@ const filteredCats = computed(() => cats.value.filter(c => c.type === type.value
 
 async function load() {
   cats.value = await api.getCategories()
-  console.log(cats.value)
 }
 
 function edit(c) {
