@@ -74,9 +74,12 @@ onMounted(load)
   gap: 8px;
   justify-content: space-around;
   margin: -16px -16px 0;
-  padding: 20px 0;
+  padding: 0 0 16px;
   background-color: var(--primary);
   border-radius: 0 0 30px 30px;
+  box-shadow:
+      0 4px 6px -1px rgba(0, 0, 0, 0.05),
+      0 10px 15px -3px rgba(0, 0, 0, 0.08);
 }
 
 .type-toggle button {

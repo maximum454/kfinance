@@ -30,9 +30,13 @@
           :key="icon.id"
           class="icon-cell"
           :class="{ selected: icon.id === selectedIcon }"
+          :style="icon.id === selectedIcon ? {
+            backgroundColor: selectedColor + '80', // Полупрозрачный фон (12% прозрачности)
+            borderColor: selectedColor,              // Цветная рамка
+          } : {}"
           @click="selectedIcon = icon.id"
         >
-          <IconRenderer :name="icon.lucide" :size="28" />
+          <IconRenderer :name="icon.lucide" :size="28" :style="{ color: icon.id === selectedIcon ? '#ffffff' : '' }" />
         </div>
         <button class="icon-cell icon-more" @click="openIcons">
           <span>•••</span>
@@ -203,7 +207,7 @@ async function save() {
 .icon-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 8px;
 }
 
 .icon-cell {
@@ -213,9 +217,9 @@ async function save() {
   aspect-ratio: 1;
   background: var(--surface);
   border: 2px solid transparent;
-  border-radius: 50%;
+  border-radius: 12px;
   cursor: pointer;
-  padding: 10px;
+  padding: 12px;
   transition: all 0.15s;
 }
 

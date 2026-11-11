@@ -51,15 +51,15 @@ export const iconGroups = [
   },
   {
     id: 'shopping', title: 'Покупки',
-    icons: ['shopping-bag','shopping-cart','gift','tag','basket','box','store','dollar-sign','package','baggage-claim','archive','layers'].map(id => ({ id, lucide: toLucide(id) })),
+    icons: ['shopping-bag','shopping-cart', 'gift','tag','basket','box','store','dollar-sign','package','baggage-claim','archive','layers'].map(id => ({ id, lucide: toLucide(id) })),
   },
   {
     id: 'food', title: 'Еда и напитки',
-    icons: ['coffee','utensils','pizza','cake','apple','ice-cream','cup-soda','wine','beer','mug','popcorn','sandwich'].map(id => ({ id, lucide: toLucide(id) })),
+    icons: ['shopping-basket', 'ham', 'coffee','utensils','pizza','cake','apple','ice-cream','cup-soda','wine','beer','mug','popcorn','sandwich', 'glass-water'].map(id => ({ id, lucide: toLucide(id) })),
   },
   {
     id: 'home', title: 'Дом',
-    icons: ['house','bed','lamp','couch','shower','key','garden','tool','sofa','armchair','building2','fence'].map(id => ({ id, lucide: toLucide(id) })),
+    icons: ['house', 'washing-machine', 'bed','lamp','couch','shower','key','garden','tool','sofa','armchair','building2','fence'].map(id => ({ id, lucide: toLucide(id) })),
   },
   {
     id: 'health', title: 'Здоровье',
@@ -75,7 +75,7 @@ export const iconGroups = [
   },
   {
     id: 'bills', title: 'Счета',
-    icons: ['file-text','calculator','pen','calendar','mail','chart-bar','receipt','file','printer','clipboard','scroll','wallet-cards'].map(id => ({ id, lucide: toLucide(id) })),
+    icons: ['file-text', 'phone-call', 'calculator','pen','calendar','mail','chart-bar','receipt','file','printer','clipboard','scroll','wallet-cards'].map(id => ({ id, lucide: toLucide(id) })),
   },
   {
     id: 'sport', title: 'Спорт',
@@ -91,7 +91,7 @@ export const iconGroups = [
   },
   {
     id: 'family', title: 'Семья/дети',
-    icons: ['users','baby','dog','cat','heart','gift','cake','house','toy-brick','blocks','rabbit','bird'].map(id => ({ id, lucide: toLucide(id) })),
+    icons: ['user-round-group', 'users','baby','dog','cat','heart','gift','cake','house','toy-brick','blocks','rabbit','bird'].map(id => ({ id, lucide: toLucide(id) })),
   },
   {
     id: 'farm', title: 'Ферма',

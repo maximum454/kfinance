@@ -1,5 +1,6 @@
 <template>
   <div class="history">
+    <PageHeader title="История"/>
     <div class="filters">
       <input v-model="dateFrom" type="date" />
       <input v-model="dateTo" type="date" />
@@ -21,6 +22,7 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from "../components/PageHeader.vue";
 
 const transactions = ref([])
 const dateFrom = ref('')

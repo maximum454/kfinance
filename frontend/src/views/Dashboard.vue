@@ -35,8 +35,8 @@
                 :stroke-dashoffset="s.offset"
                 stroke-width="16" fill="none" :style="{ transform: 'rotate(-90deg)', transformOrigin: 'center' }"
         />
-        <text x="50" y="54" text-anchor="middle" font-size="14" font-weight="bold">
-          {{ activeType === 'expense' ? data?.totals.expense.toLocaleString() : data?.totals.income.toLocaleString() }}
+        <text x="50" y="54" text-anchor="middle" font-size="14" font-weight="400">
+          {{ activeType === 'expense' ? data?.totals.expense.toLocaleString() : data?.totals.income.toLocaleString() }} ₸
         </text>
       </svg>
     </div>
@@ -283,7 +283,7 @@ onMounted(() => {
   padding: 6px 0;
   background: var(--surface);
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   border: none;
 }
 
@@ -361,7 +361,7 @@ onMounted(() => {
   gap: 8px;
   justify-content: space-around;
   margin: -16px;
-  padding: 20px 0 100px;
+  padding: 20px 0 90px;
   background-color: var(--primary);
   border-radius: 0 0 30px 30px;
 }
