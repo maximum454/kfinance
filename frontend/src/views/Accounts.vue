@@ -1,5 +1,6 @@
 <template>
   <div class="mgmt">
+    <PageHeader title="Счета" />
     <form @submit.prevent="addAc" class="add-form">
       <input v-model="newName" placeholder="Название" required />
       <select v-model="newCurr"><option value="KZT">KZT</option><option value="USD">USD</option><option value="RUB">RUB</option></select>
@@ -16,6 +17,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from '../components/PageHeader.vue'
 const accs = ref([])
 const newName = ref('')
 const newCurr = ref('KZT')

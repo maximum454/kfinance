@@ -213,10 +213,9 @@ onMounted(() => {
 
 .rates {
   display: flex;
-  gap: 8px;
-  background: var(--surface);
-  border-radius: 16px;
+  background: var(--primary);
   padding: 12px 8px;
+  margin: -16px;
   box-shadow:
       0 4px 6px -1px rgba(0, 0, 0, 0.05),
       0 10px 15px -3px rgba(0, 0, 0, 0.08);
@@ -238,12 +237,13 @@ onMounted(() => {
 .rate-code {
   font-size: 12px;
   font-weight: 600;
-  color: var(--text-secondary);
+  color: var(--surface);
 }
 
 .rate-value {
   font-size: 14px;
   font-weight: 600;
+  color: var(--surface);
 }
 
 .rate-direction {
@@ -288,7 +288,7 @@ onMounted(() => {
 .period-select-date {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   gap: 12px;
   margin-bottom: 20px;
   font-size: 15px;

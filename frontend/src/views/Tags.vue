@@ -1,5 +1,6 @@
 <template>
   <div class="mgmt">
+    <PageHeader title="Теги" />
     <form @submit.prevent="addT" class="add-form">
       <input v-model="newName" placeholder="Название тега" required />
       <button>+</button>
@@ -14,6 +15,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from '../components/PageHeader.vue'
 const tags = ref([])
 const newName = ref('')
 async function load() { tags.value = await api.getTags() }

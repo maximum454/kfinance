@@ -1,5 +1,6 @@
 <template>
   <div class="mgmt">
+    <PageHeader title="Регулярные" />
     <form @submit.prevent="addR" class="add-form">
       <select v-model="acct"><option value="">Счёт</option><option v-for="a in accs" :key="a.id" :value="a.id">{{ a.name }}</option></select>
       <input v-model="amount" type="number" step="0.01" placeholder="Сумма" required />
@@ -19,6 +20,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from '../components/PageHeader.vue'
 const rps = ref([])
 const accs = ref([])
 const acct = ref('')

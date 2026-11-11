@@ -1,6 +1,6 @@
 <template>
   <div class="layout">
-    <header class="header">
+    <header class="header" v-if="!route.meta.hideHeader">
       <button class="menu-btn" @click="menuOpen = !menuOpen">☰</button>
       <span class="title">Kfinance</span>
       <span class="balance" v-if="balance !== null">{{ balance.toLocaleString() }} ₸</span>
@@ -29,10 +29,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { api } from '../api'
 
+const route = useRoute()
 const auth = useAuthStore()
 const router = useRouter()
 const menuOpen = ref(false)

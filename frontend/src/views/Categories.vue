@@ -1,5 +1,6 @@
 <template>
   <div class="mgmt">
+    <PageHeader title="Категории" />
     <form @submit.prevent="addCat" class="add-form">
       <input v-model="newName" placeholder="Название" required />
       <select v-model="newType"><option value="expense">Расход</option><option value="income">Доход</option></select>
@@ -30,6 +31,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { api } from '../api'
+import PageHeader from '../components/PageHeader.vue'
 
 const cats = ref([])
 const newName = ref('')
