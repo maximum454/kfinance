@@ -69,7 +69,7 @@ onMounted(async () => {
 }
 .menu-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
 .title { flex: 1; font-weight: 600; font-size: 18px; }
-.balance { font-weight: 700; font-size: 16px; }
+.balance { font-weight: 700; font-size: 16px; text-align: center}
 .header-link { color: #fff; text-decoration: none; font-size: 20px; padding: 4px; border-radius: 6px; }
 .header-link:hover { background: rgba(255,255,255,.15); }
 .menu {
