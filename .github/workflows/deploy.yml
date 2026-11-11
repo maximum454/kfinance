@@ -46,7 +46,7 @@ jobs:
 
       - name: Deploy backend to Timeweb
         run: |
-          rsync -avz --delete --exclude='.git' --exclude='.env' --exclude='.env.*' \
+          rsync -avz -e "ssh -i ~/.ssh/id_ed25519" --delete --exclude='.git' --exclude='.env' --exclude='.env.*' \
             --exclude='storage/logs/*' --exclude='storage/framework/cache/data/*' \
             --exclude='storage/framework/sessions/*' --exclude='storage/framework/views/*' \
             --exclude='vendor/' \
@@ -54,12 +54,12 @@ jobs:
 
       - name: Deploy frontend to Timeweb
         run: |
-          rsync -avz --delete \
+          rsync -avz -e "ssh -i ~/.ssh/id_ed25519" --delete \
             frontend/dist/ ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }}:~/kfinance/public_html/
 
       - name: Post-deploy (symlink, permissions, migrations)
         run: |
-          ssh ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }} bash -s << 'REMOTESCRIPT'
+          ssh -i ~/.ssh/id_ed25519 ${{ secrets.TIMEWEB_USER }}@${{ secrets.TIMEWEB_HOST }} bash -s << 'REMOTESCRIPT'
             set -e
             echo "→ Recreating symlink"
             ln -sf /home/m/maximum454/kfinance/backend/public /home/m/maximum454/kfinance/public_html/laravel
